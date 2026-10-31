@@ -1,4 +1,24 @@
-<!DOCTYPE html>
+ // ===== WIKIPEDIA ONLY - GOOGLE 100% BLOCK =====
+ let q=c.replace("who is","").replace("what is","").replace("baka","").replace("search","").trim();
+ if(q.length>2 && !c.includes("call") && !c.includes("battery") && !c.includes("location")){
+   speak("Searching Sir "+q+" on my own database, not Google");
+   try{
+     let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
+     let d=await r.json();
+     if(d.extract){ 
+       speak(d.extract.slice(0,250)+" Sir"); 
+       document.getElementById("text").innerText=d.extract; 
+     } else {
+       speak("Sorry Sir, no data found for "+q+", and Google search is blocked as per your order");
+     }
+   }catch(e){ 
+     speak("Sorry Sir, Wikipedia ma nathi malyu, pan Google block che Baka, so I will not open Google"); 
+   }
+   return; // IMPORTANT - etle Google par nai jai
+ }
+
+ // LAST LINE - Agar koi match nai thay to Google na khule
+ speak("Yes Sir, bolo su karvu che?");<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
