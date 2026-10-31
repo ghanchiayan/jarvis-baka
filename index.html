@@ -3,48 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS AUTO</title>
+<title>BAKA JARVIS - FINAL</title>
 <style>
 body{background:#000;color:#0ff;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:monospace;text-align:center;padding:20px}
-#j{width:140px;height:140px;border:4px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:70px;box-shadow:0 0 30px #0ff}
-input,button,select{margin:5px;padding:12px;background:#111;color:#0ff;border:1px solid #0ff;border-radius:10px}
-#log{width:90%;max-width:400px;background:#111;padding:10px;border:1px solid #0ff;text-align:left;min-height:50px}
+#j{width:150px;height:150px;border:4px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:70px;box-shadow:0 0 40px #0ff;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px #0ff}50%{box-shadow:0 0 50px #0ff}}
+input,button{margin:5px;padding:14px;background:#111;color:#0ff;border:1px solid #0ff;border-radius:12px;font-size:16px}
+#log{width:92%;max-width:420px;background:#111;padding:12px;border:1px solid #0ff;text-align:left;min-height:80px;max-height:200px;overflow-y:auto}
+#wake{color:#0f0;font-weight:bold}
 </style>
 </head>
 <body>
-<h3>🤖 JARVIS - AUTO MODE</h3>
+<h3>🤖 BAKA JARVIS - FINAL 🔒</h3>
 <div id="j">🧠</div>
-<p id="st">Ready Baka - Auto Che!</p>
-<input id="cmd" type="text" placeholder="Lakh Baka - Auto Chalse!" style="width:85%;max-width:320px;font-size:16px">
-<div id="log">Log: Ready...</div>
-<button id="mic">🎤 Bolo Baka</button>
+<p id="st">Keh: "Hey JARVIS"</p>
+<p id="wake">Wake Word: Hey JARVIS - Listening...</p>
+<input id="cmd" type="text" placeholder="Lakh: open instagram / youtube / whatsapp" style="width:88%;max-width:340px">
+<div id="log">Log: Ready Baka...</div>
+<button id="mic">🎤 Always ON - Hey JARVIS Bolo</button>
 
 <script>
-let t=null;
-let log=document.getElementById('log');
-let st=document.getElementById('st');
+let log=document.getElementById('log'), st=document.getElementById('st'), j=document.getElementById('j');
 function addLog(m){log.innerHTML+="<br>> "+m;log.scrollTop=log.scrollHeight}
-function speak(m){st.innerText=m;speechSynthesis.speak(new SpeechSynthesisUtterance(m));addLog(m)}
-function run(){
- let q=document.getElementById('cmd').value.toLowerCase().trim();
- if(q.length<2) return;
- addLog("Auto Command: "+q);
- if(q.includes('battery')){navigator.getBattery().then(b=>speak("Battery "+Math.round(b.level*100)+" percent Baka"))}
+function speak(m){st.innerText=m;let u=new SpeechSynthesisUtterance(m);u.lang='en-IN';speechSynthesis.speak(u);addLog("JARVIS: "+m)}
+
+function handleCommand(q){
+ q=q.toLowerCase().trim(); if(!q) return; addLog("YOU: "+q);
+ // REMOVE wake word if present
+ q=q.replace('hey jarvis','').replace('hey jarvish','').trim();
+
+ if(q.includes('open instagram')||q.includes('instagram kholo')){
+  speak("Opening Instagram Baka"); window.open("https://www.instagram.com","_blank");
+ }
+ else if(q.includes('open youtube')||q.includes('youtube kholo')){
+  speak("Opening YouTube Baka"); window.open("https://www.youtube.com","_blank");
+ }
+ else if(q.includes('open whatsapp')||q.includes('whatsapp kholo')){
+  speak("Opening WhatsApp Baka"); window.open("https://web.whatsapp.com","_blank");
+ }
+ else if(q.includes('open google')){
+  speak("Opening Google Baka"); window.open("https://www.google.com","_blank");
+ }
+ else if(q.includes('send whatsapp')||q.includes('whatsapp message')){
+  // whatsapp message with permission
+  let msg = prompt("Baka kone message mokalvu? Number lakh + Message: \nEx: 9876543210 Hello Baka");
+  if(msg){
+   let per = confirm("Baka, aa WhatsApp message mokalvu? \n"+msg+"\nOK=Ha, Cancel=Na");
+   if(per){ let parts=msg.split(' '); let num=parts[0]; let text=parts.slice(1).join(' '); window.open("https://wa.me/"+num+"?text="+encodeURIComponent(text)); speak("WhatsApp mokalyo Baka permission sathe"); }
+   else { speak("Na mokalyo Baka, permission nathi"); }
+  }
+ }
+ else if(q.includes('video call')||q.includes('call')){
+  let who = prompt("Kone call karvo Baka? Number lakh:");
+  if(who){
+   let per = confirm("Baka, "+who+" ne call karu? Phone / Video? OK=Ha");
+   if(per){ window.open("tel:"+who); speak("Calling "+who+" Baka, permission mali gayi"); }
+   else { speak("Call nathi karyo Baka, permission nathi!"); addLog("🔒 Call Blocked - No Permission!"); }
+  }
+ }
+ else if(q.includes('battery')){navigator.getBattery().then(b=>speak("Battery "+Math.round(b.level*100)+" percent Baka"))}
  else if(q.includes('time')||q.includes('samay')){speak("Time "+new Date().toLocaleTimeString()+" Baka")}
- else if(q.includes('google')||q.length>3){window.open("https://www.google.com/search?q="+q);speak("Search karyu "+q+" Baka")}
+ else {
+  speak("Samjhi gayo "+q+" Baka"); 
+  let per = confirm("Google ma '"+q+"' search karu Baka? OK=Ha");
+  if(per) window.open("https://www.google.com/search?q="+q);
+ }
 }
-// AUTO - Lakhse etle 1 second pachi apome chalse!
+
+let rec;
+function startListening(){
+ let SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+ if(!SR){addLog("Browser ma voice nathi Baka"); return;}
+ rec = new SR(); rec.lang='en-IN'; rec.continuous=true; rec.interimResults=false;
+ rec.onresult=(e)=>{
+  let last = e.results[e.results.length-1][0].transcript;
+  addLog("Heard: "+last);
+  if(last.toLowerCase().includes('hey jarvis')||last.toLowerCase().includes('hey jarvish')){
+   j.style.borderColor='#0f0'; speak("Ha Baka Bolo!"); handleCommand(last);
+   setTimeout(()=>j.style.borderColor='#0ff',2000);
+  }
+ };
+ rec.onend=()=>{ addLog("Restart listening..."); startListening(); };
+ rec.start(); addLog("🎤 Always Listening for Hey JARVIS...");
+}
+
 document.getElementById('cmd').addEventListener('input',()=>{
- clearTimeout(t);
- t=setTimeout(run,1200);
+ let q=document.getElementById('cmd').value; if(q.length>2) handleCommand(q);
 });
-// Mic mate
-document.getElementById('mic').addEventListener('click',()=>{
- let r=new (window.SpeechRecognition||window.webkitSpeechRecognition)();
- r.lang='gu-IN';r.start();
- r.onresult=(e)=>{document.getElementById('cmd').value=e.results[0][0].transcript;run()}
-});
-speak("Auto JARVIS Ready Baka - Have Kai Dabvu Nathi Padtu!");
+document.getElementById('mic').addEventListener('click',()=>{startListening(); speak("Always ON Baka, Bol Hey JARVIS open instagram");});
+
+// Auto start
+setTimeout(startListening,1000);
+speak("Final JARVIS Ready Baka - Bol Hey JARVIS open instagram!");
 </script>
 </body>
-</html>
+ </html>
