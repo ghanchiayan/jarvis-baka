@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JARVIS V2 BAKA FINAL</title>
 <style>
-body{background:#000;color:#0ff;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:monospace;text-align:center;padding:20px;margin:0}
+body{backgrou kind:#000;color:#0ff;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:monospace;text-align:center;padding:20px;margin:0}
 #jarvis{width:140px;height:140px;border:4px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:60px;box-shadow:0 0 30px #0ff;animation:pulse 2s infinite;margin:20px}
 @keyframes pulse{0%{box-shadow:0 0 10px #0ff}50%{box-shadow:0 0 40px #0ff}100%{box-shadow:0 0 10px #0ff}}
 button{background:#0ff;color:#000;border:none;padding:12px 25px;border-radius:25px;font-weight:bold;margin:6px}
@@ -79,6 +79,79 @@ async function handle(c){
    return;
  }
  speak("Yes Sir, bolo");
+}
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS</title>
+<style>
+body{background:#000;color:#0ff;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:monospace;text-align:center;padding:15px;margin:0}
+#jarvis{width:120px;height:120px;border:3px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;box-shadow:0 0 20px #0ff;margin:15px}
+button{background:#0ff;color:#000;border:none;padding:10px 18px;border-radius:20px;font-weight:bold;margin:4px}
+input{padding:10px;width:85%;border-radius:20px;border:1px solid #0ff;background:#111;color:#fff;margin:5px}
+#text{margin:10px;background:#111;padding:12px;border-radius:12px;width:90%;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div id="jarvis">🤖</div>
+<div id="text">Ready Sir</div>
+
+<button onclick="start()">🎤 Bolo</button>
+<button onclick="handle('mane call kar')" style="background:#ff0055;color:#fff">📞 Mane Call Kar</button>
+<button onclick="pickContact()" style="background:#ffaa00;color:#000">👥 Contact</button>
+<button onclick="openCamera()" style="background:#aa00ff;color:#fff">📷 Camera</button>
+<button onclick="openFiles()" style="background:#00aaff;color:#fff">📁 Files</button>
+<button onclick="confirmCall()" style="background:#fff;color:#000">✅ Ha Call Kar</button>
+
+<input id="in" placeholder="Bolo...">
+<button onclick="fromInput()">Go</button>
+
+<script>
+const BAKA_NUMBER="7383935750";
+function speak(t){ let u=new SpeechSynthesisUtterance(t); u.pitch=0.7; u.rate=0.9; speechSynthesis.speak(u); document.getElementById("text").innerText=t; }
+
+function fromInput(){ handle(document.getElementById("in").value); }
+function start(){
+  let R=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let r=new R(); r.lang='en-IN'; r.start();
+  r.onresult=e=>{ handle(e.results[0][0].transcript); }
+}
+
+async function pickContact(){
+  if(!(navigator.contacts && navigator.contacts.select)){
+    let num=prompt("Number lakho:");
+    if(num){ localStorage.setItem("temp_tel",num); speak("Number save "+num+", Ha call kar bolo to call karis"); document.getElementById("text").innerText="Number: "+num+"\nHa Call Kar dabavo to j call thase"; }
+    return;
+  }
+  try{
+    const c=await navigator.contacts.select(['name','tel'],{multiple:false});
+    if(c[0]){ localStorage.setItem("temp_tel",c[0].tel[0]); localStorage.setItem("temp_name",c[0].name[0]); speak("Selected "+c[0].name[0]+", Ha call kar bolo to j call karis"); document.getElementById("text").innerText=c[0].name[0]+" : "+c[0].tel[0]+"\nPermission vagar call nahi thay, Ha Call Kar bolo"; }
+  }catch(e){}
+}
+function confirmCall(){
+  let tel=localStorage.getItem("temp_tel")||BAKA_NUMBER;
+  if(confirm("Call karu? "+tel)){ window.location.href="tel:"+tel; }else speak("Cancel karyu");
+}
+async function openCamera(){
+  try{ let s=await navigator.mediaDevices.getUserMedia({video:true}); let v=document.createElement("video"); v.srcObject=s; v.autoplay=true; v.style.width="90%"; document.getElementById("text").innerHTML=""; document.getElementById("text").appendChild(v); setTimeout(()=>{ s.getTracks().forEach(t=>t.stop()); document.getElementById("text").innerText="Camera bandh - thodi permission puri"; },15000); }catch(e){ speak("Camera deny"); }
+}
+function openFiles(){
+  let i=document.createElement("input"); i.type="file"; i.onchange=e=>{ let f=e.target.files[0]; document.getElementById("text").innerText="File: "+f.name+"\n"+Math.round(f.size/1024)+" KB - thodi permission"; speak("File "+f.name); }; i.click();
+}
+async function handle(c){
+  if(!c) return; c=c.toLowerCase();
+  if(c.includes("mane call kar")||c.includes("call me")){ localStorage.setItem("temp_tel",BAKA_NUMBER); speak("Tane call karu? Ha call kar bolo to j karis"); document.getElementById("text").innerText="Call: "+BAKA_NUMBER+"\nHa Call Kar bolo to j thase - permission vagar nahi"; navigator.vibrate([400,100,400]); return; }
+  if(c.includes("ha call kar")){ confirmCall(); return; }
+  if(c.includes("contact")){ pickContact(); return; }
+  if(c.includes("camera")){ openCamera(); return; }
+  if(c.includes("file")){ openFiles(); return; }
+  if(c.includes("time")){ speak(new Date().toLocaleTimeString()); return; }
+  try{ let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(c)); let d=await r.json(); if(d.extract){ speak(d.extract.slice(0,180)); document.getElementById("text").innerText=d.extract; } }catch(e){}
 }
 </script>
 </body>
