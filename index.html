@@ -4,37 +4,15 @@ speechSynthesis.speak(new SpeechSynthesisUtterance(text)),pitch=1,rate=0.85
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JARVIS - BAKA EDITION</title>
+<title>JARVIS BAKA</title>
 <style>
-body{background:black;color:#00ffcc;text-align:center;font-family:monospace;padding-top:100px}
-#btn{padding:20px 40px;font-size:22px;background:#00ffcc;border:none;border-radius:50px;box-shadow:0 0 20px #00ffcc}
-#status{margin-top:30px;font-size:18px}
+body{background:#000;color:#00ffc8;text-align:center;font-family:monospace;padding-top:80px}
+h1{font-size:32px;text-shadow:0 0 15px #00ffc8}
+#btn{padding:22px 45px;font-size:22px;font-weight:bold;background:#00ffc8;border:0;border-radius:100px;box-shadow:0 0 30px #00ffc8}
+#status{margin-top:40px;color:white;font-size:18px;border:1px solid #00ffc8;padding:15px;border-radius:10px;margin:40px 20px}
 </style>
 </head>
 <body>
 <h1>⚡ JARVIS BAKA ⚡</h1>
-<button id="btn" onclick="startJarvis()">TAP TO START JARVIS</button>
-<div id="status">Baka... Tap kari ne "Hey Jarvis" bol!</div>
-
-<script>
-let synth = window.speechSynthesis;
-let isListening = false;
-
-function speak(text){
-  let utter = new SpeechSynthesisUtterance(text);
-  utter.pitch = 1; // 20-25 varas na chokra jevo avaj
-  utter.rate = 0.85;
-  utter.volume = 1;
-  synth.speak(utter);
-  document.getElementById("status").innerText = "JARVIS: " + text;
-}
-
-function startJarvis(){
-  if(isListening) return;
-  isListening = true;
-  document.getElementById("status").innerText = "Listening... Baka 'Hey Jarvis' bol!";
-  speak("Ha Baka, Jarvis hazir che, bolo!");
-
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.continuous = true;
-  recognition.interimResults =
+<button id="btn" onclick="startJarvis()">TAP - JARVIS CHALU KAR</button>
+<div id="status">Baka... button dabaya
