@@ -156,3 +156,127 @@ async function handle(c){
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS 2 in 1</title>
+<style>
+body{background:#000;color:#0ff;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:monospace;text-align:center;padding:10px;margin:0}
+#jarvis{width:135px;height:135px;border:4px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:60px;box-shadow:0 0 30px #0ff;animation:pulse 2s infinite;margin:10px}
+@keyframes pulse{0%{box-shadow:0 0 10px #0ff}50%{box-shadow:0 0 40px #0ff}100%{box-shadow:0 0 10px #0ff}}
+button{background:#0ff;color:#000;border:none;padding:10px 16px;border-radius:20px;font-weight:bold;margin:4px;font-size:13px}
+input,select{padding:10px;width:92%;border-radius:20px;border:1px solid #0ff;background:#111;color:#fff;margin:4px}
+#text{margin:8px;background:#111;padding:12px;border-radius:12px;border:1px solid #0ff33;width:92%;white-space:pre-wrap;min-height:50px;color:#0ff}
+</style>
+</head>
+<body>
+<h3 style="color:#0ff;margin:5px">🤖 JARVIS V2 - 2 in 1 COMBO</h3>
+<div id="jarvis">🧠</div>
+<div id="text">Good Evening Sir. All systems nominal. I am fully operational. Ready Baka!</div>
+
+<button onclick="start()" style="background:#0ff;color:#000">🎤 Bolo Baka</button>
+<button onclick="ironTest()" style="background:#ffcc00;color:#000">🔊 Iron Man Voice Test</button>
+
+<select id="voiceSelect"><option>Voice loading...</option></select>
+
+<div>
+<button onclick="handle('mane call kar')" style="background:#ff0055;color:#fff">📞 Mane Call Kar</button>
+<button onclick="pickContact()" style="background:#ffaa00;color:#000">👥 Contact</button>
+</div>
+<div>
+<button onclick="openCamera()" style="background:#aa00ff;color:#fff">📷 Camera</button>
+<button onclick="openFiles()" style="background:#00aaff;color:#fff">📁 Files</button>
+<button onclick="confirmCall()" style="background:#fff;color:#000">✅ Ha Call Kar</button>
+</div>
+<button onclick="askPerm()" style="background:#00ff88;color:#000">🔓 4 Permission+</button>
+
+<input id="in" placeholder="Type karo... 'call 123' 'battery' 'kya chu' 'time'">
+<button onclick="fromInput()">Go</button>
+
+<script>
+const BAKA_NUMBER="7383935750";
+localStorage.setItem("baka_my_number",BAKA_NUMBER);
+let ironVoice=null; let voiceSelect=document.getElementById("voiceSelect");
+
+function loadVoices(){
+  let v=speechSynthesis.getVoices();
+  voiceSelect.innerHTML="";
+  v.forEach((vo,i)=>{
+    let o=document.createElement("option"); o.value=i; o.textContent=vo.name+" ("+vo.lang+")";
+    voiceSelect.appendChild(o);
+  });
+  ironVoice=v.find(x=>x.name.includes("Google UK English Male"))||v[0];
+}
+speechSynthesis.onvoiceschanged=loadVoices; setTimeout(loadVoices,800);
+
+function speak(t){
+  speechSynthesis.cancel();
+  let u=new SpeechSynthesisUtterance(t);
+  if(ironVoice) u.voice=ironVoice;
+  u.pitch=0.55; u.rate=0.85;
+  speechSynthesis.speak(u);
+  document.getElementById("text").innerText="JARVIS: "+t;
+}
+function ironTest(){ speak("Good Evening Sir, I am JARVIS, fully operational, limited permissions granted, ready for your command Sir"); }
+function fromInput(){ handle(document.getElementById("in").value); }
+function start(){
+  let R=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let r=new R(); r.lang='en-IN'; r.start();
+  document.getElementById("text").innerText="Samhlu Chu Baka...";
+  r.onresult=e=>{ document.getElementById("in").value=e.results[0][0].transcript; handle(e.results[0][0].transcript); }
+}
+
+async function askPerm(){
+  let perms=[];
+  try{ let p=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej)); perms.push("📍 Location OK"); }catch(e){ perms.push("📍 Location Denied"); }
+  try{ let n=await Notification.requestPermission(); perms.push("🔔 Notify: "+n); }catch(e){}
+  perms.push("🎤 Mic OK"); perms.push("🔋 Battery OK - Full BLOCKED");
+  document.getElementById("text").innerText=perms.join("\n")+"\n\n🔒 Full Access Still BLOCKED";
+  speak("Limited permissions granted Sir");
+}
+
+async function pickContact(){
+  if(!(navigator.contacts && navigator.contacts.select)){
+    let num=prompt("Number lakho:");
+    if(num){ localStorage.setItem("temp_tel",num); speak("Number "+num+" save, Ha call kar bolo to j call karis"); document.getElementById("text").innerText="Number: "+num+"\nHa Call Kar dabavo - permission vagar call nahi"; }
+    return;
+  }
+  try{
+    const c=await navigator.contacts.select(['name','tel'],{multiple:false});
+    if(c[0]){ localStorage.setItem("temp_tel",c[0].tel[0]); localStorage.setItem("temp_name",c[0].name[0]); document.getElementById("text").innerText=c[0].name[0]+" : "+c[0].tel[0]+"\n🔒 Ha Call Kar bolo to j call - permission vagar nahi"; speak("Selected "+c[0].name[0]); }
+  }catch(e){}
+}
+function confirmCall(){
+  let tel=localStorage.getItem("temp_tel")||BAKA_NUMBER;
+  let name=localStorage.getItem("temp_name")||"Baka You";
+  if(confirm("Call karu? "+name+" "+tel)){ speak("Calling "+name+" as per your permission"); window.location.href="tel:"+tel; }else speak("Cancelled Sir");
+}
+async function openCamera(){
+  try{ let s=await navigator.mediaDevices.getUserMedia({video:true}); let v=document.createElement("video"); v.srcObject=s; v.autoplay=true; v.style.width="90%"; v.style.border="2px solid #0ff"; v.style.borderRadius="12px"; let box=document.getElementById("text"); box.innerHTML=""; box.appendChild(v); setTimeout(()=>{ s.getTracks().forEach(t=>t.stop()); box.innerText="📷 Camera OFF - thodi permission puri"; },20000); speak("Camera on for 20 seconds Sir, limited"); }catch(e){ speak("Camera denied Sir"); }
+}
+function openFiles(){
+  let i=document.createElement("input"); i.type="file"; i.onchange=e=>{ let f=e.target.files[0]; document.getElementById("text").innerText="📁 File: "+f.name+"\nSize: "+Math.round(f.size/1024)+" KB\nThodi permission"; speak("File "+f.name); }; i.click();
+}
+
+async function handle(c){
+  if(!c) return; c=c.toLowerCase();
+  if(c.includes("mane call kar")||c.includes("call me")||c.includes("baka ne call")){ localStorage.setItem("temp_tel",BAKA_NUMBER); localStorage.setItem("temp_name","Baka You"); speak("Ready to call you Sir, please confirm Ha Call Kar"); document.getElementById("text").innerText="📞 Call: "+BAKA_NUMBER+"\n✅ Ha Call Kar dabavo to j call - permission vagar nahi"; navigator.vibrate([400,100,400]); document.getElementById("jarvis").innerText="📲"; setTimeout(()=>document.getElementById("jarvis").innerText="🧠",1500); return; }
+  if(c.includes("ha call kar")||c.includes("yes call")){ confirmCall(); return; }
+  if(c.includes("contact")){ pickContact(); return; }
+  if(c.includes("camera")){ openCamera(); return; }
+  if(c.includes("file")){ openFiles(); return; }
+  if(c.includes("battery")){ if(navigator.getBattery){ let b=await navigator.getBattery(); speak("Battery "+Math.round(b.level*100)+" percent Sir, charging "+(b.charging?"yes":"no")); document.getElementById("text").innerText="🔋 Battery: "+Math.round(b.level*100)+"%\nCharging: "+(b.charging?"Yes":"No")+"\nThodi permission"; } return; }
+  if(c.includes("kya chu")||c.includes("location")||c.includes("where")){ navigator.geolocation.getCurrentPosition(p=>{ speak("Location found Sir"); window.open("https://www.openstreetmap.org/?mlat="+p.coords.latitude+"&mlon="+p.coords.longitude,"_blank"); }); return; }
+  if(c.includes("time")||c.includes("samay")){ speak("Time is "+new Date().toLocaleTimeString()+" Sir"); return; }
+  let q=c.replace("who is","").replace("what is","").replace("baka","").trim();
+  if(q.length>2 && !c.includes("call")){
+    speak("Searching "+q+" Sir, Google blocked, Wikipedia only");
+    try{ let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q)); let d=await r.json(); if(d.extract){ document.getElementById("text").innerText=d.extract; speak(d.extract.slice(0,200)); }else speak("No data Sir"); }catch(e){ speak("No data Sir"); }
+    return;
+  }
+}
+</script>
+</body>
+</html>
