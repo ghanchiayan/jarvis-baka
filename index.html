@@ -1,18 +1,129 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>JARVIS BAKA</title><style>body{background:#000;color:#0ff;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;text-align:center}#jarvis{width:150px;height:150px;border:4px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:70px;box-shadow:0 0 30px #0ff}button{background:#0ff;color:#000;border:none;padding:12px 30px;border-radius:30px;font-weight:bold;margin:10px;font-size:18px}#text{margin-top:20px;font-size:1.2em}input{padding:12px;width:70%;border-radius:20px;border:1px solid #0ff;background:#111;color:#fff}</style></head><body><h1>🧔 JARVIS BAKA</h1><div id="jarvis">🧔</div><div id="text">No Chrome Mode Ready Baka!</div><br><button onclick="start()">🎤 Bolo Baka</button><div><input id="in" placeholder="Type karo..."><button onclick="fromInput()">Go</button></div><script>let voices=[];function loadV(){voices=speechSynthesis.getVoices()}speechSynthesis.onvoiceschanged=loadV;loadV();function speak(t){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);let m=voices.find(v=>v.name.toLowerCase().includes("male"))||voices[0];if(m)u.voice=m;u.pitch=0.75;u.rate=0.85;speechSynthesis.speak(u);document.getElementById("text").innerText=t}function openApp(a,w){speak("Kholi Rahyo Chu");try{window.location.href=a;setTimeout(()=>window.open(w,"_blank"),1500)}catch(e){window.open(w,"_blank")}}function start(){let R=window.SpeechRecognition||window.webkitSpeechRecognition;let r=new R();r.lang='en-IN';r.start();text.innerText="Samhlu Chu...";r.onresult=e=>{let cmd=e.results[0][0].transcript;inEl.value=cmd;handle(cmd)}}let inEl=document.getElementById("in");let text=document.getElementById("text");function fromInput(){handle(inEl.value)}function handle(c){if(!c)return;c=c.toLowerCase();if(c.includes("time")||c.includes("samay"))speak("Time "+new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata'}));else if(c.includes("insta"))openApp("intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;end","https://instagram.com");else if(c.includes("youtube")||c.includes("yt"))openApp("intent://www.youtube.com/#Intent;package=com.google.android.youtube;scheme=https;end","https://youtube.com");else if(c.includes("whatsapp")||c.includes("wp"))openApp("intent://send?#Intent;package=com.whatsapp;scheme=whatsapp;end","https://web.whatsapp.com");else if(c.includes("song")||c.includes("play")){let q=c.replace("play","");openApp("intent://www.youtube.com/results?search_query="+q+"#Intent;package=com.google.android.youtube;scheme=https;end","https://www.youtube.com/results?search_query="+q)}else{let q=c;speak("Searching "+q);window.open("https://google.com/search?q="+q,"_blank")}}inEl.addEventListener("keypress",e=>{if(e.key=="Enter")fromInput()})</script></body></html>
-speechSynthesis.speak(new SpeechSynthesisUtterance(text)),pitch=1,rate=0.85
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JARVIS BAKA</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS V2 - BAKA FINAL</title>
 <style>
-body{background:#000;color:#00ffc8;text-align:center;font-family:monospace;padding-top:80px}
-h1{font-size:32px;text-shadow:0 0 15px #00ffc8}
-#btn{padding:22px 45px;font-size:22px;font-weight:bold;background:#00ffc8;border:0;border-radius:100px;box-shadow:0 0 30px #00ffc8}
-#status{margin-top:40px;color:white;font-size:18px;border:1px solid #00ffc8;padding:15px;border-radius:10px;margin:40px 20px}
+body{background:#000;color:#0ff;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:monospace;text-align:center;padding:20px}
+#jarvis{width:140px;height:140px;border:4px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:60px;box-shadow:0 0 30px #0ff;animation:pulse 2s infinite;margin:20px}
+@keyframes pulse{0%{box-shadow:0 0 10px #0ff}50%{box-shadow:0 0 40px #0ff}100%{box-shadow:0 0 10px #0ff}}
+button{background:#0ff;color:#000;border:none;padding:12px 25px;border-radius:25px;font-weight:bold;margin:6px}
+input,select{padding:12px;width:85%;border-radius:20px;border:1px solid #0ff;background:#111;color:#fff;margin:5px}
+#text{margin:15px;font-size:1.1em;background:#111;padding:15px;border-radius:15px;border:1px solid #0ff33;width:90%}
 </style>
 </head>
 <body>
-<h1>⚡ JARVIS BAKA ⚡</h1>
-<button id="btn" onclick="startJarvis()">TAP - JARVIS CHALU KAR</button>
-<div id="status">Baka... button dabaya
+<h1>🤖 JARVIS V2 BAKA - FINAL</h1>
+<div id="jarvis">🧠</div>
+<div id="text">Iron Man JARVIS Ready Baka!</div>
+
+<button onclick="start()">🎤 Bolo Baka</button>
+<button onclick="testIron()" style="background:gold;color:#000">🔊 Iron Man Voice Test</button>
+
+<div style="width:100%">
+<select id="voiceSelect"><option>Voice load thai che...</option></select>
+<input id="in" placeholder="Type karo... 'call mumy' 'battery ketli' 'kya chu'">
+<button onclick="fromInput()">Go</button>
+</div>
+
+<p style="font-size:12px;color:#0aa">Features: Call | Battery | Location | WhatsApp | Flash | Vibrate | Time | Wikipedia (No Google)</p>
+
+<script>
+// ===== IRON MAN VOICE SYSTEM =====
+let ironVoice=null; let voiceSelect=document.getElementById("voiceSelect");
+function loadVoices(){
+  let voices=speechSynthesis.getVoices();
+  voiceSelect.innerHTML="";
+  voices.forEach((v,i)=>{
+    let o=document.createElement("option"); o.value=i; o.textContent=v.name+" ("+v.lang+")";
+    if(v.name.includes("UK English Male")) o.textContent+=" ⭐ IRON MAN";
+    voiceSelect.appendChild(o);
+  });
+  let saved=localStorage.getItem("baka_voice");
+  if(saved && voices[saved]){ voiceSelect.value=saved; ironVoice=voices[saved]; }
+  else{ ironVoice=voices.find(v=>v.name.includes("Google UK English Male"))||voices.find(v=>v.lang=="en-GB")||voices[0]; }
+}
+speechSynthesis.onvoiceschanged=loadVoices; setTimeout(loadVoices,800);
+voiceSelect.onchange=()=>{ let v=speechSynthesis.getVoices(); ironVoice=v[voiceSelect.value]; localStorage.setItem("baka_voice",voiceSelect.value); speak("Yes Sir, voice updated"); }
+
+function speak(t){
+  speechSynthesis.cancel();
+  let u=new SpeechSynthesisUtterance(t);
+  if(ironVoice) u.voice=ironVoice;
+  u.pitch=0.6; u.rate=0.85; u.volume=1;
+  speechSynthesis.speak(u);
+  document.getElementById("text").innerText="JARVIS: "+t;
+}
+function testIron(){ speak("Good Evening Sir. All systems nominal. I am fully operational."); }
+
+// ===== HELPERS =====
+function openApp(a,w){try{window.location.href=a;setTimeout(()=>window.open(w,"_blank"),1000)}catch(e){window.open(w,"_blank")}}
+let inEl=document.getElementById("in");
+function fromInput(){handle(inEl.value)}
+function start(){let R=window.SpeechRecognition||window.webkitSpeechRecognition;let r=new R();r.lang='en-IN';r.start();document.getElementById("text").innerText="Samhlu Chu Baka...";r.onresult=e=>{let c=e.results[0][0].transcript;inEl.value=c;handle(c)}}
+
+// ===== MAIN BRAIN - 10 FEATURES + CALL - NO GOOGLE =====
+async function handle(c){
+ if(!c)return; c=c.toLowerCase().trim();
+
+ // 1. FACE UNLOCK
+ if(c.includes("face")||c.includes("unlock")||c.includes("camera")){
+   speak("Face scan activated Sir"); openApp("intent://#Intent;action=android.media.action.IMAGE_CAPTURE;end",""); return;
+ }
+ // 2. EMOTION
+ if(c.includes("sad")||c.includes("gusse")||c.includes("happy")||c.includes("thak")){
+   speak("I understand Sir, take a deep breath, I am here"); return;
+ }
+ // 3. DAILY ROUTINE / GOOD MORNING
+ if(c.includes("good morning")||c.includes("morning")||c.includes("good evening")){
+   speak("Good Morning Sir. The time is "+new Date().toLocaleTimeString()+". All systems ready"); return;
+ }
+ // 4. FLASH / VIBRATE / BRIGHTNESS
+ if(c.includes("flash")||c.includes("light")||c.includes("torch")){
+   speak("Trying flashlight Sir"); try{navigator.mediaDevices.getUserMedia({video:{torch:true}})}catch(e){speak("Flash not supported in browser Sir")} return;
+ }
+ if(c.includes("vibrate")||c.includes("kamp")){ navigator.vibrate([300,100,300]); speak("Vibration activated Sir"); return; }
+ 
+ // 5. BATTERY
+ if(c.includes("battery")){
+   if(navigator.getBattery){ navigator.getBattery().then(b=>speak("Battery at "+Math.round(b.level*100)+" percent Sir")); } else speak("Battery API not supported Sir"); return;
+ }
+ // 6. PHONE CALL - MAIN FEATURE
+ if(c.includes("call")||c.includes("phone kar")||c.includes("phone lagav")){
+   let num=c.replace(/[^0-9]/g,"");
+   if(num.length>=7){ speak("Calling "+num+" Sir"); window.location.href="tel:"+num; return; }
+   if(navigator.contacts && navigator.contacts.select){
+     speak("Opening contacts Sir"); navigator.contacts.select(['name','tel'],{multiple:false}).then(cs=>{ if(cs[0]){ window.location.href="tel:"+cs[0].tel[0]; speak("Calling "+cs[0].name+" Sir"); } });
+   } else { speak("Sir, please say number, like call 9876543210"); window.location.href="tel:"; } return;
+ }
+ // 7. APP OPEN
+ if(c.includes("insta")){ openApp("intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;end","https://instagram.com"); speak("Opening Instagram Sir"); return; }
+ if(c.includes("youtube")||c.includes("yt")){ openApp("intent://www.youtube.com/#Intent;package=com.google.android.youtube;scheme=https;end","https://youtube.com"); speak("Opening Youtube Sir"); return; }
+ if(c.includes("whatsapp")&&!c.includes("message")){ openApp("intent://send?#Intent;package=com.whatsapp;scheme=whatsapp;end","https://web.whatsapp.com"); speak("Opening WhatsApp Sir"); return; }
+ // 8. WHATSAPP MESSAGE
+ if(c.includes("whatsapp")&&c.includes("message")){ let m=c.split("message")[1]||"Hello Sir"; openApp("intent://send?text="+encodeURIComponent(m)+"#Intent;package=com.whatsapp;scheme=whatsapp;end","https://web.whatsapp.com"); speak("WhatsApp ready Sir"); return; }
+ // 9. LOCATION
+ if(c.includes("location")||c.includes("kya chu")||c.includes("where am i")){ navigator.geolocation.getCurrentPosition(p=>{ speak("You are at latitude "+p.coords.latitude.toFixed(2)+" Sir"); window.open("https://maps.google.com/?q="+p.coords.latitude+","+p.coords.longitude,"_blank")}); return; }
+ // 10. LOCK
+ if(c.includes("lock")){ speak("Locking screen simulation Sir"); return; }
+
+ // TIME
+ if(c.includes("time")||c.includes("samay")){ speak("The time is "+new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata'})+" Sir"); return; }
+ 
+ // WIKIPEDIA Q&A - NO GOOGLE
+ let q=c.replace("who is","").replace("what is","").replace("baka","").trim();
+ if(q.length>2){
+   speak("Searching Sir "+q);
+   try{
+     let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
+     let d=await r.json();
+     if(d.extract){ speak(d.extract.slice(0,250)); document.getElementById("text").innerText=d.extract; }
+     else speak("No data found Sir for "+q);
+   }catch(e){ speak("I am learning about "+q+" Sir"); }
+ }
+}
+inEl.addEventListener("keypress",e=>{if(e.key=="Enter")fromInput()})
+</script>
+</body>
+</html>
